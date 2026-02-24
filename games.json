@@ -15,4 +15,13 @@
   "path": "games/shark-game/index.html",
   "image": "games/shark-game/icon.png"
 }
+,{
+  "id": "incremancer",
+  "title": "Incremancer",
+  "path": "games/incremancer/index.html",
+  "thumbnail": "games/incremancer/thumbnail.png",
+  "description": "Idle necromancer strategy game."
+}
+
+
 ]
