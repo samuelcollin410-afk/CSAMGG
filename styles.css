@@ -456,3 +456,64 @@ code{
   font-size: 13px;
   outline: none;
 }
+.studyBtn{
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 99999;
+
+  padding: 10px 14px;
+  border-radius: 14px;
+
+  background: rgba(20,20,20,0.85);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: white;
+  text-decoration: none;
+  font-weight: 900;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.studyBtn:hover{
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.studyBtn:active{
+  transform: translateY(0px);
+}
+.navPill{
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 9999;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(20,20,30,0.55);
+  backdrop-filter: blur(10px);
+
+  color: rgba(255,255,255,0.92);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+}
+
+.navPill:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.navPill--study{
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+}

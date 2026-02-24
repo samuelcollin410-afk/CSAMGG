@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StudySpace</title>
+
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <div class="app">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="brand" id="homeBtn" title="Back to Home">
+        <div class="logoDot"></div>
+        <div>
+          <div class="brandTitle">StudySpace</div>
+          <div class="brandSub">Quizlet-style • yours</div>
+        </div>
+      </div>
+
+      <div class="topActions">
+        <!-- Logout button is injected here by JS -->
+        <a class="btn" href="../">Back to OG Site</a>
+        <button class="btn" id="exportAllBtn" type="button">Export All</button>
+        <button class="btn" id="importBtn" type="button">Import</button>
+        <button class="btn" id="openSettingsBtn" type="button">Settings</button>
+        <button class="btn primary" id="createStudyBtn" type="button">Create</button>
+      </div>
+    </header>
+
+    <!-- HOME VIEW -->
+    <main id="viewHome" class="view">
+      <section class="card">
+        <div class="cardHead">
+          <div>
+            <h2>Studies</h2>
+            <div class="muted">Pick one to study, or create a new one.</div>
+          </div>
+
+          <div class="row">
+            <input id="studySearch" class="input" placeholder="Search studies..." />
+            <button class="btn" id="clearSearchBtn" type="button">Clear</button>
+          </div>
+        </div>
+
+        <div class="nowBar">
+          <div>
+            <div class="muted">Now</div>
+            <div id="nowTime" class="nowTime">—</div>
+          </div>
+
+          <div class="todayBox">
+            <div class="muted">Today</div>
+            <div id="todayReminders" class="todayReminders">No reminders today.</div>
+          </div>
+
+          <!-- Upcoming box is injected here by JS -->
+        </div>
+
+        <div id="studiesList" class="list"></div>
+      </section>
+
+      <div class="grid2">
+        <section class="card">
+          <div class="cardHead">
+            <div>
+              <h3>Calendar</h3>
+              <div class="muted">Jan 2026 → Jan 2027. Click a date to view/add reminders.</div>
+            </div>
+          </div>
+          <div id="calendarWrap"></div>
+        </section>
+
+        <section class="card">
+          <div class="cardHead">
+            <div>
+              <h3>To-do</h3>
+              <div class="muted">Check = auto delete in 12s. Delete button = 6s countdown.</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <input id="todoInput" class="input" placeholder="New to-do..." />
+            <button class="btn primary" id="addTodoBtn" type="button">Add</button>
+          </div>
+
+          <div id="todoList" class="list"></div>
+        </section>
+      </div>
+    </main>
+
+    <!-- STUDY VIEW -->
+    <main id="viewStudy" class="view hidden">
+      <section class="card">
+        <div class="cardHead">
+          <div>
+            <div class="muted">
+              <a href="#" id="backToHomeLink">← Home</a>
+            </div>
+            <h2 id="studyTitle">Study</h2>
+            <div id="studyMeta" class="muted">—</div>
+          </div>
+
+          <div class="row">
+            <label class="toggle">
+              <input type="checkbox" id="favoritesOnlyToggle" />
+              <span>Favorites only</span>
+            </label>
+
+            <button class="btn" id="exportStudyBtn" type="button">Export Study</button>
+            <button class="btn" id="renameStudyBtn" type="button">Rename</button>
+            <button class="btn danger" id="deleteStudyBtn" type="button">Delete</button>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" type="button" data-tab="terms">Terms</button>
+          <button class="tab" type="button" data-tab="flashcards">Flashcards</button>
+          <button class="tab" type="button" data-tab="gimkit">Gimkit</button>
+          <button class="tab" type="button" data-tab="match">Match</button>
+          <button class="tab" type="button" data-tab="test">Test</button>
+          <button class="tab" type="button" data-tab="stats">Stats</button>
+          <!-- Write tab button is injected by JS -->
+        </div>
+
+        <!-- TERMS -->
+        <section id="tab_terms" class="panel">
+          <div class="grid2">
+            <div class="card sub">
+              <div class="cardHead">
+                <div>
+                  <h3>Add / Edit Term</h3>
+                  <div class="muted">Tip: if you have lots of terms, use Bulk Import.</div>
+                </div>
+              </div>
+
+              <input id="termQ" class="input" placeholder="Question / term..." />
+              <input id="termA" class="input" placeholder="Answer / definition..." />
+
+              <div class="row">
+                <button class="btn primary" id="saveTermBtn" type="button">Add term</button>
+                <button class="btn" id="cancelEditTermBtn" type="button" disabled>Cancel edit</button>
+              </div>
+
+              <hr class="sep" />
+
+              <div class="cardHead">
+                <div>
+                  <h3>Bulk Import</h3>
+                  <div class="muted">
+                    Paste one per line as <b>Question/Answer</b> (first slash splits).
+                  </div>
+                </div>
+              </div>
+
+              <textarea id="bulkInput" class="input" rows="9" placeholder="Example:
+Home/la casa
+Attic/ático
+To clean/limpiar"></textarea>
+
+              <div class="row">
+                <button class="btn primary" id="bulkImportBtn" type="button">Import</button>
+                <button class="btn" id="bulkClearBtn" type="button">Clear</button>
+              </div>
+
+              <div class="hint">
+                Heads-up: ChatGPT can quickly convert messy notes into clean Question/Answer lines.
+              </div>
+            </div>
+
+            <div class="card sub">
+              <div class="cardHead">
+                <div>
+                  <h3>Terms</h3>
+                  <div class="muted">Favorite terms to focus only on them in any mode.</div>
+                </div>
+
+                <div class="row">
+                  <input id="termSearch" class="input" placeholder="Search terms..." />
+                  <button class="btn" id="clearTermSearchBtn" type="button">Clear</button>
+                </div>
+              </div>
+
+              <div id="termsList" class="list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FLASHCARDS -->
+        <section id="tab_flashcards" class="panel hidden">
+          <div class="card sub">
+            <div class="cardHead">
+              <div>
+                <h3>Flashcards</h3>
+                <div class="muted">Shortcuts: ← / →, Space to flip</div>
+              </div>
+
+              <div class="row">
+                <div id="fcCounter" class="pill">0 / 0</div>
+                <button class="btn" id="fcRestartBtn" type="button">Restart</button>
+                <button class="btn" id="fcPrevBtn" type="button">←</button>
+                <button class="btn primary" id="fcNextBtn" type="button">→</button>
+              </div>
+            </div>
+
+            <div id="flashCard" class="flashCard" role="button" tabindex="0" aria-label="Flashcard">
+              <div id="flashInner" class="flashInner">
+                <div class="cardFace front">
+                  <div id="fcQ" class="bigText">—</div>
+                </div>
+                <div class="cardFace back">
+                  <div id="fcA" class="bigText">—</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint">Click the card to flip.</div>
+          </div>
+        </section>
+
+        <!-- GIMKIT -->
+        <section id="tab_gimkit" class="panel hidden">
+          <div class="card sub">
+            <div class="cardHead">
+              <div>
+                <h3>Gimkit</h3>
+                <div class="muted">Shortcuts: 1/2/3/4 to pick • Enter to continue</div>
+              </div>
+
+              <div class="row">
+                <div id="gkCounter" class="pill">0 / 0</div>
+                <button class="btn" id="gkRestartBtn" type="button">Restart</button>
+              </div>
+            </div>
+
+            <div class="gkPrompt" id="gkPrompt">—</div>
+            <div class="gkGrid" id="gkChoices"></div>
+
+            <div id="gkFeedback" class="hint hidden"></div>
+            <button class="btn primary hidden" id="gkNextBtn" type="button">Continue</button>
+          </div>
+        </section>
+
+        <!-- MATCH -->
+        <section id="tab_match" class="panel hidden">
+          <div class="card sub">
+            <div class="cardHead">
+              <div>
+                <h3>Match</h3>
+                <div class="muted">Drag answers onto the correct question.</div>
+              </div>
+              <div class="row">
+                <button class="btn" id="matchRestartBtn" type="button">Restart</button>
+              </div>
+            </div>
+
+            <div class="matchGrid">
+              <div>
+                <div class="muted">Questions</div>
+                <div id="matchQs" class="list"></div>
+              </div>
+              <div>
+                <div class="muted">Answers (drag)</div>
+                <div id="matchAs" class="list"></div>
+              </div>
+            </div>
+
+            <div id="matchStatus" class="hint"></div>
+          </div>
+        </section>
+
+        <!-- TEST -->
+        <section id="tab_test" class="panel hidden">
+          <div class="card sub">
+            <div class="cardHead">
+              <div>
+                <h3>Test</h3>
+                <div class="muted">No repeats in a test. Saved to your test history.</div>
+              </div>
+
+              <div class="row">
+                <input id="testCount" class="input" type="number" min="1" value="10" style="max-width:120px;" />
+                <button class="btn primary" id="startTestBtn" type="button">Start</button>
+                <button class="btn" id="resetTestBtn" type="button">Reset</button>
+              </div>
+            </div>
+
+            <div id="testArea" class="hidden"></div>
+            <button id="submitTestBtn" class="btn primary hidden" type="button">Submit</button>
+
+            <div id="testResults" class="hidden"></div>
+
+            <hr class="sep" />
+
+            <div class="cardHead">
+              <h3>Test History</h3>
+            </div>
+            <div id="testHistory" class="list"></div>
+          </div>
+        </section>
+
+        <!-- STATS -->
+        <section id="tab_stats" class="panel hidden">
+          <div class="grid2">
+            <div class="card sub">
+              <div class="cardHead">
+                <div>
+                  <h3>Summary</h3>
+                  <div class="muted">Tracks misses across Gimkit / Match / Write / Tests.</div>
+                </div>
+              </div>
+
+              <div id="studyStatsSummary" class="statsGrid"></div>
+            </div>
+
+            <div class="card sub">
+              <div class="cardHead">
+                <div>
+                  <h3>Most Missed</h3>
+                  <div class="muted">Terms you miss the most.</div>
+                </div>
+              </div>
+
+              <div id="mostMissed" class="list"></div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <!-- CREATE STUDY MODAL -->
+    <div id="createStudyModal" class="modal hidden">
+      <div class="modalCard">
+        <div class="cardHead">
+          <h3>Create Study</h3>
+          <button class="iconBtn" id="closeCreateStudyBtn" type="button">✕</button>
+        </div>
+
+        <input id="newStudyName" class="input" placeholder="Study name..." />
+        <div class="row">
+          <button class="btn primary" id="confirmCreateStudyBtn" type="button">Create</button>
+          <button class="btn" id="cancelCreateStudyBtn" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMPORT MODAL -->
+    <div id="importModal" class="modal hidden">
+      <div class="modalCard">
+        <div class="cardHead">
+          <h3>Import JSON</h3>
+          <button class="iconBtn" id="closeImportBtn" type="button">✕</button>
+        </div>
+
+        <div class="muted">
+          Paste exported JSON. If a study name already exists, you’ll choose Merge or Replace.
+        </div>
+
+        <textarea id="importText" class="input" rows="10" placeholder="Paste JSON..."></textarea>
+
+        <div class="row">
+          <button class="btn primary" id="confirmImportBtn" type="button">Import</button>
+          <button class="btn" id="cancelImportBtn" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="modal hidden">
+      <div class="modalCard">
+        <div class="cardHead">
+          <h3>Settings</h3>
+          <button class="iconBtn" id="closeSettingsBtn" type="button">✕</button>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="toggleThemeBtn" type="button">Toggle Light/Dark</button>
+
+          <div class="row" style="gap:10px;">
+            <div class="muted">Accent</div>
+            <input id="accentPicker" type="color" class="input" style="max-width:70px; padding:6px;" />
+          </div>
+        </div>
+
+        <hr class="sep" />
+
+        <div class="cardHead">
+          <h3>Text Colors</h3>
+        </div>
+
+        <div class="row">
+          <select id="colorArea" class="input">
+            <option value="globalText">Global text</option>
+            <option value="globalMuted">Global muted</option>
+            <option value="gimkitText">Gimkit text</option>
+            <option value="testText">Test text</option>
+            <option value="flashText">Flashcards text</option>
+            <option value="matchText">Match text</option>
+            <option value="termsText">Terms text</option>
+            <option value="statsText">Stats text</option>
+            <option value="writeText">Write text</option>
+          </select>
+
+          <input id="colorValue" type="color" class="input" style="max-width:70px; padding:6px;" />
+          <button class="btn" id="applyColorBtn" type="button">Apply</button>
+          <button class="btn danger" id="clearColorBtn" type="button">Clear</button>
+        </div>
+
+        <div class="hint">Tip: leave a color empty (Clear) to go back to default.</div>
+      </div>
+    </div>
+
+    <!-- DAY MODAL -->
+    <div id="dayModal" class="modal hidden">
+      <div class="modalCard">
+        <div class="cardHead">
+          <h3 id="dayModalTitle">YYYY-MM-DD</h3>
+          <button class="iconBtn" id="closeDayModalBtn" type="button">✕</button>
+        </div>
+
+        <div id="dayEventsList" class="list"></div>
+
+        <div class="row">
+          <input id="eventText" class="input" placeholder="Add a reminder..." />
+          <button class="btn primary" id="saveEventBtn" type="button">Add</button>
+          <button class="btn danger" id="deleteEventBtn" type="button" disabled>Delete edit</button>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="closeDayModalBtn2" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFY MODAL -->
+    <div id="notifyModal" class="modal hidden">
+      <div class="modalCard">
+        <div class="cardHead">
+          <h3>Today</h3>
+        </div>
+
+        <div id="notifyText" class="notifyText"></div>
+
+        <div class="row">
+          <button class="btn primary" id="dismissNotifyBtn" type="button">Close</button>
+          <button class="btn" id="editNotifyBtn" type="button">Edit</button>
+        </div>
+
+        <button class="btn hidden" id="closeNotifyBtn" type="button"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ load JS once, at the end -->
+  <script src="./app.js" defer></script>
+</body>
+</html>
