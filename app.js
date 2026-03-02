@@ -1,4 +1,4 @@
-"use strict";
+"unl -ba app.js | sed -n '440,470p'e strict";
 
 const home = document.getElementById("home");
 const shell = document.getElementById("shell");
@@ -403,3 +403,93 @@ function handleRoute(){
 }
 
 window.addEventListener("hashchange", handleRoute);
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, s => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  }[s]));
+}
+
+// Only show these when you're in an internal game view
+function isInInternalGameView() {
+  // Adjust this to match your app:
+  // - if you use a route like "play"
+  // - or you show an iframe with id="gameFrame"
+  const frame = document.getElementById("gameFrame");
+  const isFrameVisible = frame && frame.offsetParent !== null;
+  return !!isFrameVisible; // simplest reliable check
+}
+
+function pushGameChatToast(text, username = "Chat", ms = 6000) {
+  if (!isInInternalGameView()) return;
+
+  const wrap = document.getElementById("gameChatToasts");
+  if (!wrap) return;
+
+  // cap how many are shown
+  const MAX = 3;
+  while (wrap.children.length >= MAX) wrap.removeChild(wrap.firstElementChild);
+
+  const toast = document.createElement("div");
+  toast.className = "game-chat-toast";
+
+  const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+  toast.innerHTML = `
+    <div class="meta">${escapeHtml(username)} • ${time}</div>
+    <div class="msg">${escapeHtml(text)}</div>
+  `;
+
+  wrap.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add("show"));
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 200);
+  }, ms);
+}
+
+// pushGameChatToast(msg.text, msg.user);
+
+
+/* ===== FORCE GLOBAL chat toast (debug-safe) ===== */
+window.pushGameChatToast = function (text, username = "Chat", ms = 6000) {
+  const wrap = document.getElementById("gameChatToasts");
+  if (!wrap) {
+    console.warn("Missing #gameChatToasts container");
+    return;
+  }
+
+  const esc = (str) => String(str).replace(/[&<>"']/g, s => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+  }[s]));
+
+  // cap
+  const MAX = 3;
+  while (wrap.children.length >= MAX) wrap.removeChild(wrap.firstElementChild);
+
+  const toast = document.createElement("div");
+  toast.className = "game-chat-toast";
+
+  const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+  toast.innerHTML = `
+    <div class="meta">${esc(username)} • ${time}</div>
+    <div class="msg">${esc(text)}</div>
+  `;
+
+  wrap.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add("show"));
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 200);
+  }, ms);
+};
+
+console.log("✅ pushGameChatToast attached to window");
+/* =============================================== */

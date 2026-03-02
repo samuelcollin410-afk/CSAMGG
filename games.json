@@ -17,11 +17,18 @@
 }
 ,{
   "id": "incremancer",
-  "title": "Incremancer",
+  "name": "Incremancer",
   "path": "games/incremancer/index.html",
-  "thumbnail": "games/incremancer/thumbnail.png",
+  "image": "games/incremancer/icon.thumbnail.png",
   "description": "Idle necromancer strategy game."
 }
-
+,{
+  "id": "terraria",
+  "name": "Terraria",
+  "desc": "Terraria (Web).",
+  "type": "external",
+  "path": "https://selenitebyplayer.artmuseum.org/resources/semag/terraria/terraria.html",
+  "image": "games/terraria/logo.png"
+}
 
 ]
